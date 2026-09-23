@@ -15,56 +15,49 @@
 <a class="skip" href="#main">Skip to content</a>
 <header id="site-header" class="site-header"></header>
 <main id="main">
-  <section class="hero grid-tint">
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
+  <div class="journal wrap">
+    <nav class="contents" id="contents" aria-label="Sections on this page"></nav>
+    <div class="journal-body">
+
+      <section class="hero grid-tint">
         <p class="eyebrow" data-text="hero.splitLine"></p>
         <h1 data-text="hero.headline"></h1>
         <p class="lede" data-text="hero.sub"></p>
         <p><a class="link" href="people.html" data-text="sections.teamLink"></a></p>
-      </div>
-      <div class="specimen" aria-hidden="true">
-        <svg viewBox="0 0 320 320" class="diagram" id="hero-diagram">
-          <circle cx="160" cy="160" r="118" class="d-ring" />
-          <circle cx="160" cy="160" r="86" class="d-ring soft" />
-          <g class="d-nodes"></g>
-        </svg>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <section class="sec wrap">
-    <div class="panel-head"><span class="tag">01</span><h2 class="sec-h" data-text="sections.themes"></h2></div>
-    <div id="themes"></div>
-  </section>
+      <section class="sec" id="themes">
+        <div class="panel-head"><span class="tag">01</span><h2 class="sec-h" data-text="sections.themes"></h2></div>
+        <div id="themes-list"></div>
+      </section>
 
-  <section class="sec panel grid-tint wrap">
-    <div class="panel-head"><span class="tag">02</span><h2 class="sec-h" data-text="sections.numbers"></h2></div>
-    <div class="stats" id="stats"></div>
-  </section>
+      <section class="sec panel grid-tint" id="numbers">
+        <div class="panel-head"><span class="tag">02</span><h2 class="sec-h" data-text="sections.numbers"></h2></div>
+        <div class="stats" id="stats"></div>
+      </section>
 
-  <section class="sec wrap">
-    <div class="sec-head"><div class="panel-head"><span class="tag">03</span><h2 class="sec-h" data-text="sections.portfolio"></h2></div><a href="portfolio.html" data-text="sections.portfolioLink"></a></div>
-    <div class="pfgrid" id="pfgrid"></div>
-  </section>
+      <section class="sec" id="portfolio">
+        <div class="sec-head"><div class="panel-head"><span class="tag">03</span><h2 class="sec-h" data-text="sections.portfolio"></h2></div><a href="portfolio.html" data-text="sections.portfolioLink"></a></div>
+        <div class="pfgrid" id="pfgrid"></div>
+      </section>
 
-  <section class="sec wrap">
-    <div class="sec-head"><div class="panel-head"><span class="tag">04</span><h2 class="sec-h" data-text="sections.news"></h2></div><a href="news.html" data-text="sections.newsLink"></a></div>
-    <div class="nlist" id="news"></div>
-  </section>
+      <section class="sec" id="news">
+        <div class="sec-head"><div class="panel-head"><span class="tag">04</span><h2 class="sec-h" data-text="sections.news"></h2></div><a href="news.html" data-text="sections.newsLink"></a></div>
+        <div class="nlist" id="news-list"></div>
+      </section>
 
-  <section class="close">
-    <div class="wrap close-grid">
-      <div>
+      <section class="close">
         <h2 data-text="sections.contact"></h2>
         <p data-text="sections.contactSub"></p>
         <p><a class="btn" href="contact.html" data-text="sections.closeButton"></a></p>
-      </div>
+      </section>
+
     </div>
-  </section>
+  </div>
   <noscript><p class="wrap">This site needs JavaScript to show its content.</p></noscript>
 </main>
 <footer id="site-footer"></footer>
 <script src="render.js"></script>
+<script src="motion.js"></script>
 </body>
 </html>

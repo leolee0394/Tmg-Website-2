@@ -6,7 +6,6 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var page = document.body.dataset.page;
   var home = page === 'home';
-  var NS = 'http://www.w3.org/2000/svg';
 
   function h(tag, attrs) {
     var e = document.createElement(tag);
@@ -26,46 +25,13 @@
   }
   function get(o, path) { return path.split('.').reduce(function (a, k) { return a == null ? a : a[k]; }, o); }
 
-  // A small abstract "specimen" diagram: nodes and connecting lines, never literal
-  // biology (no DNA/molecule clip-art) -- structure only, in the brand's two colors.
-  function svgEl(t, a, parent) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); (parent || null) && parent.appendChild(e); return e; }
-  // A small ordered lattice -- a hexagonal node grid, like a crystal or molecular
-  // lattice diagram in a science journal. Structured, not a random abstract scribble.
-  function diagram(seed) {
-    var s = document.createElementNS(NS, 'svg');
-    s.setAttribute('viewBox', '0 0 200 200');
-    s.setAttribute('class', 'diagram');
-    s.setAttribute('aria-hidden', 'true');
-    var offset = (seed || 0) % 3;
-    var pts = [], rows = 3, cols = 3, cell = 46;
-    var startX = 34, startY = 34;
-    for (var r = 0; r < rows; r++) {
-      for (var c = 0; c < cols; c++) {
-        var x = startX + c * cell + (r % 2 ? cell / 2 : 0);
-        var y = startY + r * cell * 0.86;
-        pts.push([x, y]);
-      }
-    }
-    // connect each node to its right and below-right/below-left neighbors (lattice edges)
-    pts.forEach(function (p, i) {
-      var col = i % cols, row = (i - col) / cols;
-      if (col < cols - 1) svgEl('line', { x1: p[0], y1: p[1], x2: pts[i + 1][0], y2: pts[i + 1][1], class: 'd-edge' }, s);
-      if (row < rows - 1) {
-        var below = i + cols;
-        if (pts[below]) svgEl('line', { x1: p[0], y1: p[1], x2: pts[below][0], y2: pts[below][1], class: 'd-edge' }, s);
-      }
-    });
-    var accentIdx = (offset * 3 + 4) % pts.length;
-    pts.forEach(function (p, i) {
-      svgEl('circle', { cx: p[0], cy: p[1], r: i === accentIdx ? 5.5 : 3, class: i === accentIdx ? 'd-node accent' : 'd-node' }, s);
-    });
-    return s;
-  }
-
+  // No decorative artwork in this tier: an empty media slot is a plain bordered
+  // monogram tile (initials, type only), not an illustration or diagram.
   function art(label) {
-    var wrap = h('div', { class: 'ph' });
-    wrap.append(diagram(String(label || '').length + 3));
-    return wrap;
+    var initials = String(label || '').replace(/[.,()]/g, '').split(/\s+/)
+      .filter(function (w) { return /^[A-Za-z]/.test(w) && !/^(Ph|DBA|Dr)$/i.test(w); })
+      .map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
+    return h('div', { class: 'ph' }, h('span', { text: initials }));
   }
   function media(src, label, cls) {
     var wrap = h('div', { class: 'slot ' + (cls || '') });
@@ -101,33 +67,45 @@
       h('div', {}, h('p', {}, h('a', { href: c.linkedin }, 'LinkedIn')), h('p', {}, h('a', { href: c.privacy }, 'Privacy policy')), h('p', {}, h('a', { href: c.terms }, 'Terms of use')))));
   }
 
-  function renderHeroDiagram(D) {
-    var svg = $('#hero-diagram'); if (!svg) return;
-    var g = $('.d-nodes', svg);
-    var rows = 4, cols = 4, cell = 62, startX = 22, startY = 22;
-    var pts = [];
-    for (var r = 0; r < rows; r++) {
-      for (var c = 0; c < cols; c++) {
-        pts.push([startX + c * cell + (r % 2 ? cell / 2 : 0), startY + r * cell * 0.86]);
-      }
+  // Home page runs a two-column journal layout: a sticky contents index down the
+  // left, sections down the right. This is the structural break from Tier 1's
+  // single centered column -- a page architecture change, not a decoration.
+  var TOC = [
+    ['00', 'Introduction', '#top'],
+    ['01', 'sections.themes', '#themes'],
+    ['02', 'sections.numbers', '#numbers'],
+    ['03', 'sections.portfolio', '#portfolio'],
+    ['04', 'sections.news', '#news']
+  ];
+  function renderContents(D) {
+    var m = $('#contents'); if (!m) return;
+    TOC.forEach(function (row) {
+      var label = row[1].indexOf('sections.') === 0 ? get(D, row[1]) : row[1];
+      m.append(h('a', { href: row[2] }, h('span', { class: 'ci-num', text: row[0] }), h('span', { class: 'ci-label', text: label })));
+    });
+    var links = $$('a', m);
+    var targets = TOC.map(function (r) { return document.querySelector(r[2]); }).filter(Boolean);
+    if ('IntersectionObserver' in window && targets.length) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var idx = targets.indexOf(entry.target);
+          if (idx > -1 && entry.isIntersecting) {
+            links.forEach(function (l) { l.classList.remove('active'); });
+            links[idx].classList.add('active');
+          }
+        });
+      }, { rootMargin: '-40% 0px -50% 0px' });
+      targets.forEach(function (t) { io.observe(t); });
     }
-    pts.forEach(function (p, i) {
-      var col = i % cols, row = (i - col) / cols;
-      if (col < cols - 1) svgEl('line', { x1: p[0], y1: p[1], x2: pts[i + 1][0], y2: pts[i + 1][1], class: 'd-edge' }, g);
-      if (row < rows - 1) { var below = i + cols; if (pts[below]) svgEl('line', { x1: p[0], y1: p[1], x2: pts[below][0], y2: pts[below][1], class: 'd-edge' }, g); }
-    });
-    pts.forEach(function (p, i) {
-      svgEl('circle', { cx: p[0], cy: p[1], r: i === 5 ? 6.5 : 3.6, class: i === 5 ? 'd-node accent' : 'd-node' }, g);
-    });
   }
 
   function renderThemes(D) {
-    var m = $('#themes'); if (!m) return;
+    var m = $('#themes-list'); if (!m) return;
     D.themes.forEach(function (t, i) {
       m.append(h('div', { class: 'theme-row' },
         h('span', { class: 'tnum', text: '0' + (i + 1) }),
-        media(t.media, t.title, 'theme-media'),
-        h('div', { class: 'theme-copy' }, h('h3', { text: t.title }), h('p', { text: t.text }))));
+        h('h3', { class: 'theme-title', text: t.title }),
+        h('p', { class: 'theme-copy', text: t.text })));
     });
   }
 
@@ -161,7 +139,7 @@
   }
 
   function renderNews(D) {
-    var m = $('#news'); if (!m) return;
+    var m = $('#news-list') || $('#news'); if (!m) return;
     var list = home ? D.news.slice(0, 3) : D.news;
     list.forEach(function (n) {
       m.append(h('a', { class: 'nrow', href: n.url, target: '_blank', rel: 'noopener' },
@@ -203,7 +181,7 @@
   function apply(D) {
     $$('[data-text]').forEach(function (e) { var v = get(D, e.dataset.text); if (v != null) e.textContent = v; });
     renderChrome(D);
-    renderHeroDiagram(D);
+    renderContents(D);
     renderThemes(D);
     renderStats(D);
     renderPortfolio(D);

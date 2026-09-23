@@ -29,21 +29,35 @@
   // A small abstract "specimen" diagram: nodes and connecting lines, never literal
   // biology (no DNA/molecule clip-art) -- structure only, in the brand's two colors.
   function svgEl(t, a, parent) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); (parent || null) && parent.appendChild(e); return e; }
+  // A small ordered lattice -- a hexagonal node grid, like a crystal or molecular
+  // lattice diagram in a science journal. Structured, not a random abstract scribble.
   function diagram(seed) {
     var s = document.createElementNS(NS, 'svg');
     s.setAttribute('viewBox', '0 0 200 200');
     s.setAttribute('class', 'diagram');
     s.setAttribute('aria-hidden', 'true');
-    var rand = (function (n) { return function () { n = (n * 9301 + 49297) % 233280; return n / 233280; }; })(seed || 7);
-    var pts = [];
-    for (var i = 0; i < 6; i++) pts.push([30 + rand() * 140, 30 + rand() * 140]);
-    svgEl('circle', { cx: 100, cy: 100, r: 84, class: 'd-ring' }, s);
+    var offset = (seed || 0) % 3;
+    var pts = [], rows = 3, cols = 3, cell = 46;
+    var startX = 34, startY = 34;
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var x = startX + c * cell + (r % 2 ? cell / 2 : 0);
+        var y = startY + r * cell * 0.86;
+        pts.push([x, y]);
+      }
+    }
+    // connect each node to its right and below-right/below-left neighbors (lattice edges)
     pts.forEach(function (p, i) {
-      var next = pts[(i + 1) % pts.length];
-      svgEl('line', { x1: p[0], y1: p[1], x2: next[0], y2: next[1], class: 'd-edge' }, s);
+      var col = i % cols, row = (i - col) / cols;
+      if (col < cols - 1) svgEl('line', { x1: p[0], y1: p[1], x2: pts[i + 1][0], y2: pts[i + 1][1], class: 'd-edge' }, s);
+      if (row < rows - 1) {
+        var below = i + cols;
+        if (pts[below]) svgEl('line', { x1: p[0], y1: p[1], x2: pts[below][0], y2: pts[below][1], class: 'd-edge' }, s);
+      }
     });
+    var accentIdx = (offset * 3 + 4) % pts.length;
     pts.forEach(function (p, i) {
-      svgEl('circle', { cx: p[0], cy: p[1], r: i === 0 ? 5 : 3, class: i === 0 ? 'd-node accent' : 'd-node' }, s);
+      svgEl('circle', { cx: p[0], cy: p[1], r: i === accentIdx ? 5.5 : 3, class: i === accentIdx ? 'd-node accent' : 'd-node' }, s);
     });
     return s;
   }
@@ -90,18 +104,20 @@
   function renderHeroDiagram(D) {
     var svg = $('#hero-diagram'); if (!svg) return;
     var g = $('.d-nodes', svg);
-    var rand = (function (n) { return function () { n = (n * 9301 + 49297) % 233280; return n / 233280; }; })(11);
+    var rows = 4, cols = 4, cell = 62, startX = 22, startY = 22;
     var pts = [];
-    for (var i = 0; i < 7; i++) {
-      var ang = rand() * Math.PI * 2, r = 60 + rand() * 46;
-      pts.push([160 + Math.cos(ang) * r, 160 + Math.sin(ang) * r]);
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        pts.push([startX + c * cell + (r % 2 ? cell / 2 : 0), startY + r * cell * 0.86]);
+      }
     }
     pts.forEach(function (p, i) {
-      var next = pts[(i + 1) % pts.length];
-      svgEl('line', { x1: p[0], y1: p[1], x2: next[0], y2: next[1], class: 'd-edge' }, g);
+      var col = i % cols, row = (i - col) / cols;
+      if (col < cols - 1) svgEl('line', { x1: p[0], y1: p[1], x2: pts[i + 1][0], y2: pts[i + 1][1], class: 'd-edge' }, g);
+      if (row < rows - 1) { var below = i + cols; if (pts[below]) svgEl('line', { x1: p[0], y1: p[1], x2: pts[below][0], y2: pts[below][1], class: 'd-edge' }, g); }
     });
     pts.forEach(function (p, i) {
-      svgEl('circle', { cx: p[0], cy: p[1], r: i === 0 ? 6 : 3.4, class: i === 0 ? 'd-node accent' : 'd-node' }, g);
+      svgEl('circle', { cx: p[0], cy: p[1], r: i === 5 ? 6.5 : 3.6, class: i === 5 ? 'd-node accent' : 'd-node' }, g);
     });
   }
 

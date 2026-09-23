@@ -20,6 +20,13 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
+/* faint lab-graph texture behind panel sections, to separate this tier from Tier 1's plain paper */
+.grid-tint {
+  background-image:
+    linear-gradient(rgba(14,44,62,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14,44,62,.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
 img, svg { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 .wrap { max-width: 1180px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 56px); }
@@ -55,8 +62,8 @@ a { color: inherit; text-decoration: none; }
 
 /* ---------- panel / eyebrow scaffolding ---------- */
 .panel-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 40px; }
-.tag { font-size: .78rem; letter-spacing: .1em; color: var(--orange); border: 1px solid var(--orange); border-radius: 999px; padding: 3px 10px; }
-.sec-h { font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 0; }
+.tag { font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--orange); border: 1px solid var(--orange); border-radius: 999px; padding: 3px 11px; }
+.sec-h { font-family: var(--serif); font-weight: 500; font-style: italic; font-size: clamp(1.8rem, 3.6vw, 2.6rem); margin: 0; }
 .sec { padding: 88px 0; border-top: 1px solid var(--rule); }
 .sec.panel { background: linear-gradient(180deg, rgba(184,196,190,.16), rgba(184,196,190,0)); }
 .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 40px; }
@@ -68,24 +75,31 @@ a { color: inherit; text-decoration: none; }
 .muted { color: var(--ink-soft); }
 
 /* ---------- hero ---------- */
-.hero { padding: clamp(56px, 10vh, 110px) 0 40px; }
-.hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; }
-.eyebrow { font-size: .82rem; text-transform: uppercase; letter-spacing: .12em; color: var(--orange); margin: 0 0 18px; }
+.hero { padding: clamp(56px, 10vh, 110px) 0 0; overflow: hidden; position: relative; }
+.hero-grid { display: grid; grid-template-columns: 1fr 46%; gap: 0; align-items: center; position: relative; }
+.eyebrow { font-size: .78rem; text-transform: uppercase; letter-spacing: .22em; color: var(--orange); margin: 0 0 20px; }
+.hero-copy { position: relative; z-index: 2; padding-bottom: 60px; }
 .hero-copy h1 {
-  font-family: var(--serif); font-weight: 500; font-style: italic; margin: 0 0 22px;
-  font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.12; max-width: 15ch;
+  font-family: var(--serif); font-weight: 500; font-style: italic; margin: 0 0 26px;
+  font-size: clamp(2.4rem, 6.4vw, 4.4rem); line-height: 1.06; max-width: 13ch; letter-spacing: -.01em;
 }
-.hero-copy .lede { margin: 0 0 20px; }
-.hero-copy .link { border-bottom: 1px solid var(--orange); font-size: .92rem; }
-.specimen { border: 1px solid var(--rule); border-radius: 4px; padding: 20px; background: rgba(184,196,190,.1); }
+.hero-copy .lede { margin: 0 0 20px; font-size: .98rem; max-width: 36ch; }
+.hero-copy .link { border-bottom: 1px solid var(--orange); font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; }
+/* the specimen bleeds off the right edge and overlaps the copy column, rather than
+   sitting in its own bordered box -- this is the layout break from Tier 1 */
+.specimen {
+  position: relative; z-index: 1; margin-right: clamp(-140px, -12vw, -40px);
+  margin-left: -8%; padding: 30px;
+}
 .diagram { width: 100%; }
 .d-ring { fill: none; stroke: var(--sage); stroke-width: 1; }
 .d-ring.soft { stroke: var(--rule); }
-.d-edge { stroke: var(--sage); stroke-width: 1; opacity: .8; }
+.d-edge { stroke: var(--sage); stroke-width: 1; opacity: .85; }
 .d-node { fill: var(--navy); }
 .d-node.accent { fill: var(--orange); }
 
-/* signature moment: diagram lines draw in once, on load */
+/* signature moment: the lattice draws itself in once, then drifts gently forever after,
+   so the page feels quietly alive rather than static once loaded */
 .motion #hero-diagram .d-edge,
 .motion .theme-media .d-edge { stroke-dasharray: 60; stroke-dashoffset: 60; }
 .motion #hero-diagram.in .d-edge,
@@ -93,16 +107,32 @@ a { color: inherit; text-decoration: none; }
 .motion #hero-diagram .d-node,
 .motion .theme-media .d-node { opacity: 0; transform: scale(.3); transform-origin: center; transform-box: fill-box; }
 .motion #hero-diagram.in .d-node,
-.motion .theme-media.in .d-node { opacity: 1; transform: scale(1); transition: opacity .5s ease .5s, transform .5s ease .5s; }
+.motion .theme-media.in .d-node {
+  opacity: 1; transform: scale(1);
+  transition: opacity .5s ease .5s, transform .5s ease .5s;
+  animation: drift 7s ease-in-out .9s infinite;
+}
+.motion #hero-diagram.in .d-node:nth-child(3n) { animation-duration: 8.5s; animation-delay: 1.4s; }
+.motion #hero-diagram.in .d-node:nth-child(3n+1) { animation-duration: 6.2s; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes drift { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(1.6px, -2px) scale(1.04); } }
 
 /* ---------- themes ---------- */
-.theme-row { display: grid; grid-template-columns: 40px 200px 1fr; gap: 28px; align-items: center; padding: 34px 0; border-top: 1px solid var(--rule); }
+.theme-row {
+  display: grid; grid-template-columns: 40px 280px 1fr; gap: 0 40px; align-items: center;
+  padding: 44px 0; border-top: 1px solid var(--rule); position: relative;
+}
 .theme-row:first-child { border-top: none; }
-.tnum { font-family: var(--serif); font-style: italic; color: var(--ink-soft); font-size: 1.1rem; }
-.theme-media { aspect-ratio: 1; border: 1px solid var(--rule); border-radius: 4px; background: rgba(184,196,190,.1); }
-.theme-copy h3 { font-family: var(--serif); font-weight: 500; font-size: 1.45rem; margin: 0 0 8px; }
-.theme-copy p { margin: 0; max-width: 48ch; color: var(--ink-soft); }
+.theme-row:nth-child(even) .theme-media { justify-self: end; }
+.tnum { font-family: var(--serif); font-style: italic; color: var(--sage); font-size: 2rem; align-self: start; margin-top: 4px; }
+/* the lattice overlaps into the copy column instead of sitting in a boxed thumbnail */
+.theme-media {
+  aspect-ratio: 1; width: 100%; max-width: 280px; margin-right: -56px; position: relative; z-index: 1;
+  background: rgba(184,196,190,.08); border-radius: 50%;
+}
+.theme-copy { position: relative; z-index: 0; }
+.theme-copy h3 { font-family: var(--serif); font-weight: 500; font-style: italic; font-size: 1.7rem; margin: 0 0 10px; }
+.theme-copy p { margin: 0; max-width: 46ch; color: var(--ink-soft); }
 
 /* ---------- media slots ---------- */
 .slot { position: relative; overflow: hidden; background: var(--paper); }
@@ -186,8 +216,9 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
   }
   .burger { display: flex; }
   .hero-grid { grid-template-columns: 1fr; }
-  .specimen { max-width: 280px; }
+  .specimen { margin: 0 auto; max-width: 260px; }
   .theme-row { grid-template-columns: 1fr; gap: 14px; }
+  .theme-media, .theme-row:nth-child(even) .theme-media { margin: 0 auto; max-width: 200px; justify-self: center; }
   .tnum { display: none; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .pfgrid { grid-template-columns: repeat(2, 1fr); }

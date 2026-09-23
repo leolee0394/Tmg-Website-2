@@ -109,6 +109,14 @@
     });
   }
 
+  function renderHeroRail(D) {
+    var m = $('#hero-rail'); if (!m || !D.fund) return;
+    m.append(
+      h('div', { class: 'rail-item' }, h('b', { text: D.fund.founded }), h('span', { text: 'Founded' })),
+      h('div', { class: 'rail-item' }, h('b', { text: D.fund.deployed }), h('span', { text: D.fund.deployedLabel })),
+      h('div', { class: 'rail-item' }, h('b', { text: D.fund.companies }), h('span', { text: D.fund.companiesLabel })));
+  }
+
   function renderStats(D) {
     var m = $('#stats'); if (!m) return;
     D.stats.forEach(function (s) {
@@ -182,6 +190,7 @@
     $$('[data-text]').forEach(function (e) { var v = get(D, e.dataset.text); if (v != null) e.textContent = v; });
     renderChrome(D);
     renderContents(D);
+    renderHeroRail(D);
     renderThemes(D);
     renderStats(D);
     renderPortfolio(D);

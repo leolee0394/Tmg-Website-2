@@ -59,13 +59,6 @@
     "teamLink": "Meet the team",
     "contactNav": "Contact"
   },
-  "fund": {
-    "founded": "2011",
-    "deployed": "$1.4B+",
-    "deployedLabel": "Capital deployed",
-    "companies": "60+",
-    "companiesLabel": "Portfolio companies"
-  },
   "themes": [
     {
       "title": "Precision nutrition",

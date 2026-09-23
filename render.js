@@ -67,38 +67,6 @@
       h('div', {}, h('p', {}, h('a', { href: c.linkedin }, 'LinkedIn')), h('p', {}, h('a', { href: c.privacy }, 'Privacy policy')), h('p', {}, h('a', { href: c.terms }, 'Terms of use')))));
   }
 
-  // Home page runs a two-column journal layout: a sticky contents index down the
-  // left, sections down the right. This is the structural break from Tier 1's
-  // single centered column -- a page architecture change, not a decoration.
-  var TOC = [
-    ['00', 'Introduction', '#top'],
-    ['01', 'sections.themes', '#themes'],
-    ['02', 'sections.numbers', '#numbers'],
-    ['03', 'sections.portfolio', '#portfolio'],
-    ['04', 'sections.news', '#news']
-  ];
-  function renderContents(D) {
-    var m = $('#contents'); if (!m) return;
-    TOC.forEach(function (row) {
-      var label = row[1].indexOf('sections.') === 0 ? get(D, row[1]) : row[1];
-      m.append(h('a', { href: row[2] }, h('span', { class: 'ci-num', text: row[0] }), h('span', { class: 'ci-label', text: label })));
-    });
-    var links = $$('a', m);
-    var targets = TOC.map(function (r) { return document.querySelector(r[2]); }).filter(Boolean);
-    if ('IntersectionObserver' in window && targets.length) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          var idx = targets.indexOf(entry.target);
-          if (idx > -1 && entry.isIntersecting) {
-            links.forEach(function (l) { l.classList.remove('active'); });
-            links[idx].classList.add('active');
-          }
-        });
-      }, { rootMargin: '-40% 0px -50% 0px' });
-      targets.forEach(function (t) { io.observe(t); });
-    }
-  }
-
   function renderThemes(D) {
     var m = $('#themes-list'); if (!m) return;
     D.themes.forEach(function (t, i) {
@@ -107,14 +75,6 @@
         h('h3', { class: 'theme-title', text: t.title }),
         h('p', { class: 'theme-copy', text: t.text })));
     });
-  }
-
-  function renderHeroRail(D) {
-    var m = $('#hero-rail'); if (!m || !D.fund) return;
-    m.append(
-      h('div', { class: 'rail-item' }, h('b', { text: D.fund.founded }), h('span', { text: 'Founded' })),
-      h('div', { class: 'rail-item' }, h('b', { text: D.fund.deployed }), h('span', { text: D.fund.deployedLabel })),
-      h('div', { class: 'rail-item' }, h('b', { text: D.fund.companies }), h('span', { text: D.fund.companiesLabel })));
   }
 
   function renderStats(D) {
@@ -189,8 +149,6 @@
   function apply(D) {
     $$('[data-text]').forEach(function (e) { var v = get(D, e.dataset.text); if (v != null) e.textContent = v; });
     renderChrome(D);
-    renderContents(D);
-    renderHeroRail(D);
     renderThemes(D);
     renderStats(D);
     renderPortfolio(D);

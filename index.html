@@ -5,58 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340..680&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<title>Thematic VC | The March Group</title>
+<title>The March Group -- Partnering with entrepreneurs in food and health</title>
 <meta name="description" content="The March Group is backing exponential technology platforms for human and planetary health, and a new food paradigm.">
-<script>if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion');</script>
 </head>
-<body data-page="home" id="top">
-<a class="skip" href="#main">Skip to content</a>
+<body>
 <header id="site-header" class="site-header"></header>
-<main id="main">
-  <div class="journal wrap">
-    <div class="journal-body">
 
-      <section class="hero">
-        <p class="eyebrow" data-text="hero.splitLine"></p>
-        <h1 data-text="hero.headline"></h1>
-        <p class="lede" data-text="hero.sub"></p>
-        <p><a class="link" href="people.html" data-text="sections.teamLink"></a></p>
-      </section>
-
-      <section class="sec" id="themes">
-        <div class="panel-head"><span class="tag">01</span><h2 class="sec-h" data-text="sections.themes"></h2></div>
-        <div id="themes-list"></div>
-      </section>
-
-      <section class="sec panel grid-tint" id="numbers">
-        <div class="panel-head"><span class="tag">02</span><h2 class="sec-h" data-text="sections.numbers"></h2></div>
-        <div class="stats" id="stats"></div>
-      </section>
-
-      <section class="sec" id="portfolio">
-        <div class="sec-head"><div class="panel-head"><span class="tag">03</span><h2 class="sec-h" data-text="sections.portfolio"></h2></div><a href="portfolio.html" data-text="sections.portfolioLink"></a></div>
-        <div class="pfgrid" id="pfgrid"></div>
-      </section>
-
-      <section class="sec" id="news">
-        <div class="sec-head"><div class="panel-head"><span class="tag">04</span><h2 class="sec-h" data-text="sections.news"></h2></div><a href="news.html" data-text="sections.newsLink"></a></div>
-        <div class="nlist" id="news-list"></div>
-      </section>
-
-      <section class="close">
-        <h2 data-text="sections.contact"></h2>
-        <p data-text="sections.contactSub"></p>
-        <p><a class="btn" href="contact.html" data-text="sections.closeButton"></a></p>
-      </section>
-
+<main>
+  <section class="hero">
+    <div class="hero-bg-img" style="background-image:url('hero-bg.png')"></div>
+    <div class="hero-scrim"></div>
+    <div class="hero-inner wrap">
+      <h1>We invest in <span id="hero-word" class="hero-word">food.</span></h1>
+      <p class="hero-sub">Providing capital is not unique. Who we are, how we partner, and what we believe is.</p>
     </div>
-  </div>
-  <noscript><p class="wrap">This site needs JavaScript to show its content.</p></noscript>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <section class="belief wrap">
+    <h2>What we believe</h2>
+    <p class="belief-intro" id="belief-intro"></p>
+    <div id="values" class="accordion"></div>
+  </section>
+
+  <section class="showcase wrap">
+    <div class="panel-head"><h2>We partner with founders building the future of food and health.</h2><a href="portfolio.html">Our portfolio</a></div>
+    <div id="portfolio-showcase" class="pf-showcase"></div>
+  </section>
+
+  <section class="news-section wrap">
+    <div class="panel-head"><h2>Insights</h2></div>
+    <div id="home-insights-list" class="insights-grid"></div>
+  </section>
 </main>
+
 <footer id="site-footer"></footer>
 <script src="render.js"></script>
-<script src="motion.js"></script>
+
 </body>
 </html>

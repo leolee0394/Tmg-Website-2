@@ -4,8 +4,6 @@
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var page = document.body.dataset.page;
-  var home = page === 'home';
 
   function h(tag, attrs) {
     var e = document.createElement(tag);
@@ -23,13 +21,10 @@
     }
     return e;
   }
-  function get(o, path) { return path.split('.').reduce(function (a, k) { return a == null ? a : a[k]; }, o); }
 
-  // No decorative artwork in this tier: an empty media slot is a plain bordered
-  // monogram tile (initials, type only), not an illustration or diagram.
   function art(label) {
     var initials = String(label || '').replace(/[.,()]/g, '').split(/\s+/)
-      .filter(function (w) { return /^[A-Za-z]/.test(w) && !/^(Ph|DBA|Dr)$/i.test(w); })
+      .filter(function (w) { return /^[A-Za-z]/.test(w); })
       .map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
     return h('div', { class: 'ph' }, h('span', { text: initials }));
   }
@@ -45,81 +40,154 @@
     wrap.prepend(el);
     return wrap;
   }
+  window.TMGmedia = media;
 
   function renderChrome(D) {
-    var nav = D.nav.map(function (n) { return h('a', { href: n.href || n.page }, n.label); });
-    nav.push(h('a', { class: 'nav-cta', href: 'contact.html' }, D.sections.contactNav || 'Contact'));
-    var brand = h('a', { class: 'brand', href: 'index.html', 'aria-label': D.site.name + ', home' });
+    var header = $('#site-header'); if (!header) return;
+    var brand = h('a', { class: 'brand', href: 'index.html' });
     brand.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13V3h18v18h-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="miter"/><path d="M3 19h6" fill="none" stroke="var(--orange)" stroke-width="2.2"/></svg>';
     brand.append(D.site.name);
-    var burger = h('button', { class: 'burger', type: 'button', 'aria-label': 'Menu', 'aria-expanded': 'false' }, h('span'), h('span'), h('span'));
-    var navEl = h('nav', { 'aria-label': 'Primary' }, nav);
-    burger.addEventListener('click', function () {
-      var open = document.body.classList.toggle('nav-open');
-      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-    $('#site-header').append(h('div', { class: 'bar wrap' }, brand, navEl, burger));
+
+    var nav = h('nav', { 'aria-label': 'Primary' },
+      h('a', { href: 'team.html' }, 'Team'),
+      h('a', { href: 'portfolio.html' }, 'Portfolio'),
+      h('div', { class: 'dropdown' },
+        h('a', { href: 'overview.html' }, 'What we do'),
+        h('div', { class: 'dropdown-menu' },
+          h('a', { href: 'overview.html' }, 'Overview'),
+          h('a', { href: 'ecosystem.html' }, 'Ecosystem'),
+          h('a', { href: 'https://iedo.ucdavis.edu/aggie-venture-accelerator', target: '_blank', rel: 'noopener' }, 'Accelerator'))),
+      h('div', { class: 'dropdown' },
+        h('a', { href: 'contact.html' }, 'About'),
+        h('div', { class: 'dropdown-menu' },
+          h('a', { href: 'news.html' }, 'TMG News'),
+          h('a', { href: 'contact.html' }, 'Contact'))));
+
+    header.append(h('div', { class: 'bar wrap' }, brand, nav));
+
+    var footer = $('#site-footer'); if (!footer) return;
     var c = D.contact;
-    $('#site-footer').append(h('div', { class: 'cols wrap' },
-      h('div', {}, h('p', { class: 'fname', text: D.site.name }),
-        h('p', {}, (c.pressLabel || 'Inquiries and press') + ': ', h('a', { href: 'mailto:' + c.press }, c.press)),
-        h('p', {}, (c.dealsLabel || 'Investment inquiries') + ': ', h('a', { href: 'mailto:' + c.deals }, c.deals))),
-      h('div', {}, h('p', {}, h('a', { href: c.linkedin }, 'LinkedIn')), h('p', {}, h('a', { href: c.privacy }, 'Privacy policy')), h('p', {}, h('a', { href: c.terms }, 'Terms of use')))));
+    footer.append(
+      h('div', { class: 'foot-links wrap' },
+        h('a', { href: 'contact.html' }, 'Careers'),
+        h('a', { href: 'contact.html' }, 'Legal'),
+        h('a', { href: 'contact.html' }, 'Contact'),
+        h('a', { href: 'contact.html' }, 'Join our newsletter')),
+      h('div', { class: 'foot-bottom wrap' },
+        h('span', { text: '\u00A9 ' + new Date().getFullYear() + ' ' + D.site.name }),
+        h('span', {}, h('a', { href: c.linkedin }, 'LinkedIn'))));
   }
 
-  function renderThemes(D) {
-    var m = $('#themes-list'); if (!m) return;
-    D.themes.forEach(function (t, i) {
-      m.append(h('div', { class: 'theme-row' },
-        h('span', { class: 'tnum', text: '0' + (i + 1) }),
-        h('h3', { class: 'theme-title', text: t.title }),
-        h('p', { class: 'theme-copy', text: t.text })));
+  function renderHeroWords(D) {
+    var el = $('#hero-word'); if (!el || !D.heroWords) return;
+    var i = 0;
+    function next() {
+      el.style.opacity = 0;
+      setTimeout(function () {
+        el.textContent = D.heroWords[i % D.heroWords.length];
+        el.style.opacity = 1;
+        i++;
+      }, 300);
+    }
+    next();
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setInterval(next, 2200);
+    }
+  }
+
+  function renderBeliefIntro(D) {
+    ['#belief-intro', '#belief-intro-2'].forEach(function (sel) {
+      var el = $(sel); if (el) el.textContent = D.beliefIntro;
     });
   }
 
-  function renderStats(D) {
-    var m = $('#stats'); if (!m) return;
-    D.stats.forEach(function (s) {
-      m.append(h('div', { class: 'stat' },
-        h('b', { text: (s.prefix || '') + s.number + (s.suffix || '') }),
-        h('span', { text: s.label })));
+  function renderValues(D) {
+    var m = $('#values'); if (!m || !D.values) return;
+    D.values.forEach(function (v) {
+      var details = document.createElement('details');
+      var summary = document.createElement('summary');
+      summary.textContent = v.name;
+      var body = document.createElement('div');
+      body.className = 'value-body';
+      var p = document.createElement('p');
+      p.textContent = v.text;
+      var q = document.createElement('blockquote');
+      q.innerHTML = '\u201C' + v.quote + '\u201D<cite>\u2014 ' + v.attribution + '</cite>';
+      body.append(p, q);
+      details.append(summary, body);
+      m.appendChild(details);
     });
   }
 
-  function renderPortfolio(D) {
-    var m = $('#pfgrid'); if (!m) return;
-    var list = home ? D.portfolio.slice(0, 8) : D.portfolio;
-    list.forEach(function (p) {
-      m.append(h('a', { class: 'pcard', href: p.url, target: '_blank', rel: 'noopener' },
-        media(p.media, p.name, 'pcard-media'), h('span', { text: p.name })));
+  function renderPortfolioShowcase(D) {
+    var m = $('#portfolio-showcase'); if (!m) return;
+    var items = D.portfolio;
+    var testimonialSlots = [2, 5]; // interleave a pending-quote block after these indices
+    items.forEach(function (p, i) {
+      m.append(h('a', { class: 'pf-row', href: p.url, target: '_blank', rel: 'noopener' },
+        media(p.media, p.name, 'pf-row-media'),
+        h('div', { class: 'pf-row-body' },
+          h('h3', { text: p.name }),
+          p.note ? h('p', { class: 'pf-note', text: p.note }) : null,
+          h('span', { class: 'view-link', text: 'View company' }))));
+      if (testimonialSlots.indexOf(i) > -1) {
+        m.append(h('div', { class: 'testimonial-pending' },
+          h('p', { text: D.pending_quote_note || 'Founder quote pending' })));
+      }
     });
   }
 
-  function renderPeople(D) {
-    var g = $('#people-grid'); if (!g) return;
+  var INSIGHT_ICONS = {
+    News: '\uD83D\uDCF0', Podcasts: '\uD83C\uDF99', Blogs: '\u270D', Reports: '\uD83D\uDCCA'
+  };
+
+  function renderInsightsGrid(D, selector) {
+    var m = $(selector); if (!m) return;
+    var realItems = D.news.map(function (n) {
+      return { type: 'News', title: n.title, date: n.date, tag: n.tag || 'TMG News', url: n.url, real: true };
+    });
+    // Podcasts, Blogs and Reports are placeholder categories -- no real content yet,
+    // shown honestly as "coming soon" so the resource-hub structure is visible
+    // without inventing episodes, posts or reports that don't exist.
+    var placeholders = [
+      { type: 'Podcasts', title: 'Podcast episodes coming soon', real: false },
+      { type: 'Blogs', title: 'Blog posts coming soon', real: false },
+      { type: 'Reports', title: 'Research reports coming soon', real: false }
+    ];
+    realItems.concat(placeholders).forEach(function (n) {
+      if (n.type === 'News') {
+        // news keeps a plain row shape -- headline-first, like a wire feed
+        m.append(h(n.real ? 'a' : 'div', n.real ? { class: 'insight insight-row', href: n.url, target: '_blank', rel: 'noopener' } : { class: 'insight insight-row placeholder' },
+          h('span', { class: 'news-tag', text: n.tag }),
+          h('span', { class: 'news-date', text: n.date }),
+          h('strong', { text: n.title })));
+      } else {
+        // podcasts/blogs/reports get a distinct card shape with an icon, so the
+        // section reads as a mixed hub rather than one repeating list style
+        m.append(h('div', { class: 'insight insight-card placeholder type-' + n.type.toLowerCase() },
+          h('span', { class: 'insight-icon', text: INSIGHT_ICONS[n.type] }),
+          h('span', { class: 'insight-type', text: n.type }),
+          h('strong', { text: n.title })));
+      }
+    });
+  }
+
+  function renderInsights(D) {
+    renderInsightsGrid(D, '#insights-grid');
+  }
+
+  function renderTeam(D) {
+    var g = $('#team-grid'); if (!g) return;
     D.people.forEach(function (p) {
       g.append(h('div', { class: 'person' },
         media(p.photo, p.name, 'person-media'),
         h('h3', { text: p.name }),
-        p.role ? h('small', { text: p.role }) : null,
-        p.bio ? h('p', { text: p.bio }) : null));
+        p.role ? h('small', { text: p.role }) : null));
     });
   }
 
-  function renderNews(D) {
-    var m = $('#news-list') || $('#news'); if (!m) return;
-    var list = home ? D.news.slice(0, 3) : D.news;
-    list.forEach(function (n) {
-      m.append(h('a', { class: 'nrow', href: n.url, target: '_blank', rel: 'noopener' },
-        media(n.image, n.title, 'nrow-media'),
-        h('div', {}, h('small', { text: n.date + (n.tag ? ' \u00b7 ' + n.tag : '') }), h('strong', { text: n.title }))));
-    });
-  }
-
-  function renderEcosystemLists(D) {
-    var a = $('#anchors'), p = $('#partners'); if (!a && !p) return;
-    if (a) D.ecosystem.anchors.forEach(function (x) { a.append(h('li', {}, h('a', { href: x.url, target: '_blank', rel: 'noopener' }, x.name))); });
-    if (p) D.ecosystem.partners.forEach(function (x) { p.append(h('li', {}, h('a', { href: x.url, target: '_blank', rel: 'noopener' }, x.name))); });
+  function renderApproachPage(D) {
+    var intro = $('#approach-intro'); if (intro) intro.textContent = D.beliefBody;
   }
 
   function renderContact(D) {
@@ -127,13 +195,12 @@
     var c = D.contact;
     m.append(
       h('p', {}, h('small', { text: c.dealsLabel || 'Investment inquiries' }), h('br'), h('a', { href: 'mailto:' + c.deals }, c.deals)),
-      h('p', {}, h('small', { text: c.pressLabel || 'Inquiries and press' }), h('br'), h('a', { href: 'mailto:' + c.press }, c.press)),
-      h('p', {}, h('a', { href: c.linkedin, target: '_blank', rel: 'noopener' }, 'LinkedIn')));
+      h('p', {}, h('small', { text: c.pressLabel || 'Inquiries and press' }), h('br'), h('a', { href: 'mailto:' + c.press }, c.press)));
   }
 
   function renderForm(D) {
     var f = $('#signup'); if (!f) return;
-    [['first', 'First name', 'given-name'], ['last', 'Last name', 'family-name'], ['company', 'Company name', 'organization'], ['email', 'Email', 'email']].forEach(function (x) {
+    [['first', 'First name', 'given-name'], ['last', 'Last name', 'family-name'], ['email', 'Email', 'email']].forEach(function (x) {
       f.append(h('div', {}, h('label', { for: 'f-' + x[0], text: x[1] }), h('input', { id: 'f-' + x[0], name: x[0], required: true, autocomplete: x[2], type: x[0] === 'email' ? 'email' : 'text' })));
     });
     var ok = h('p', { class: 'ok', role: 'status' });
@@ -146,23 +213,36 @@
     });
   }
 
-  function apply(D) {
-    $$('[data-text]').forEach(function (e) { var v = get(D, e.dataset.text); if (v != null) e.textContent = v; });
-    renderChrome(D);
-    renderThemes(D);
-    renderStats(D);
-    renderPortfolio(D);
-    renderPeople(D);
-    renderNews(D);
-    renderEcosystemLists(D);
-    renderContact(D);
-    renderForm(D);
-    window.TMG_READY = true;
-    document.dispatchEvent(new Event('tmg:ready'));
+  function renderEcosystem(D) {
+    var copy = $('#ecosystem-copy'); if (copy) copy.textContent = D.sections.ecosystem;
+    var a = $('#anchors'), p = $('#partners');
+    if (a) D.ecosystem.anchors.forEach(function (x) { a.append(h('li', {}, h('a', { href: x.url, target: '_blank', rel: 'noopener' }, x.name))); });
+    if (p) D.ecosystem.partners.forEach(function (x) { p.append(h('li', {}, h('a', { href: x.url, target: '_blank', rel: 'noopener' }, x.name))); });
   }
 
-  if (window.TMG_DATA) apply(window.TMG_DATA);
-  else fetch('site.json').then(function (r) { return r.json(); }).then(apply)
+  function renderOverview(D) {
+    var intro = $('#overview-intro'); if (intro) intro.textContent = D.beliefBody;
+  }
+
+  function apply(D) {
+    renderChrome(D);
+    renderHeroWords(D);
+    renderBeliefIntro(D);
+    renderValues(D);
+    renderPortfolioShowcase(D);
+    renderInsightsGrid(D, '#home-insights-list');
+    renderInsights(D);
+    renderTeam(D);
+    renderApproachPage(D);
+    renderOverview(D);
+    renderEcosystem(D);
+    renderContact(D);
+    renderForm(D);
+    window.TMG_DATA_LOADED = D;
+    document.dispatchEvent(new CustomEvent('tmg:data', { detail: D }));
+  }
+
+  fetch('site.json').then(function (r) { return r.json(); }).then(apply)
     .catch(function (e) {
       document.body.insertAdjacentHTML('afterbegin', '<p style="padding:90px 24px">Could not load site.json. Serve the folder over http instead of opening the file directly.</p>');
       console.error(e);

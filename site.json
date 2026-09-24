@@ -6,24 +6,24 @@
   },
   "nav": [
     {
-      "label": "People",
-      "page": "people.html"
+      "label": "Approach",
+      "page": "approach.html"
     },
     {
       "label": "Portfolio",
       "page": "portfolio.html"
     },
     {
-      "label": "Ecosystem",
-      "page": "ecosystem.html"
+      "label": "Team",
+      "page": "team.html"
     },
     {
       "label": "News",
       "page": "news.html"
     },
     {
-      "label": "Accelerator",
-      "href": "https://iedo.ucdavis.edu/aggie-venture-accelerator"
+      "label": "Contact",
+      "page": "contact.html"
     }
   ],
   "hero": {
@@ -179,61 +179,61 @@
       "name": "Engage3",
       "url": "https://www.engage3.com/",
       "media": "https://www.google.com/s2/favicons?domain=engage3.com&sz=256",
-      "note": ""
+      "note": "Pricing and promotion intelligence for retail and consumer brands."
     },
     {
       "name": "Digestiva / Amplifye",
       "url": "https://www.digestiva.com/",
       "media": "https://www.google.com/s2/favicons?domain=digestiva.com&sz=256",
-      "note": ""
+      "note": "Enzyme science aimed at better digestive health."
     },
     {
       "name": "Rivalz",
       "url": "https://rivalzsnacks.com/",
       "media": "https://www.google.com/s2/favicons?domain=rivalzsnacks.com&sz=256",
-      "note": ""
+      "note": "Protein-forward savory snacking, built for performance."
     },
     {
       "name": "ZeroAvia",
       "url": "https://zeroavia.com/",
       "media": "https://www.google.com/s2/favicons?domain=zeroavia.com&sz=256",
-      "note": ""
+      "note": "Hydrogen-electric propulsion for zero-emission flight."
     },
     {
       "name": "VinZymes",
       "url": "https://vinzymes.com/",
       "media": "https://www.google.com/s2/favicons?domain=vinzymes.com&sz=256",
-      "note": ""
+      "note": "Enzyme technology for the wine and beverage industry."
     },
     {
       "name": "EvodiaBio",
       "url": "https://evodiabio.com/",
       "media": "https://www.google.com/s2/favicons?domain=evodiabio.com&sz=256",
-      "note": ""
+      "note": "Fermentation-derived flavor compounds for food and beverage."
     },
     {
       "name": "Number8Bio",
       "url": "https://www.number8.bio/",
       "media": "https://www.google.com/s2/favicons?domain=number8.bio&sz=256",
-      "note": ""
+      "note": "Precision fermentation platforms for novel ingredients."
     },
     {
       "name": "Pharm to Food",
       "url": "https://www.pharmtofood.com/",
       "media": "https://www.google.com/s2/favicons?domain=pharmtofood.com&sz=256",
-      "note": ""
+      "note": "Bridging pharmaceutical rigor with food-based delivery."
     },
     {
       "name": "ThriveSpan",
       "url": "https://www.marchgp.com/portfolio",
       "media": "https://static.wixstatic.com/media/9c3d55_7c0166fba7474653b8321ef4bafac54c~mv2.webp/v1/fit/w_700,h_700,q_90,enc_avif,quality_auto/9c3d55_7c0166fba7474653b8321ef4bafac54c~mv2.webp",
-      "note": ""
+      "note": "Personalized longevity and healthspan programs."
     },
     {
       "name": "SinewUs",
       "url": "https://sinewus.com/",
       "media": "https://www.google.com/s2/favicons?domain=sinewus.com&sz=256",
-      "note": ""
+      "note": "Technology supporting recovery and musculoskeletal health."
     }
   ],
   "people": [
@@ -293,5 +293,40 @@
     "terms": "https://www.marchgp.com/terms-of-use",
     "dealsLabel": "Investment inquiries",
     "pressLabel": "Inquiries and press"
-  }
+  },
+  "heroWords": [
+    "food.",
+    "medicine.",
+    "health.",
+    "innovation."
+  ],
+  "beliefIntro": "Backing a founder is not unique. Who we are, how we partner, and what we believe is.",
+  "beliefBody": "Building a company that changes how people eat and heal is hard. The founders we back have done the difficult work of turning a scientific insight into something real. Our job isn't to build these companies -- it's to find the teams who already have, and to partner with them for the long run.",
+  "values": [
+    {
+      "name": "Conviction",
+      "text": "We take the time to understand a category before we commit to it. When we find a founder who sees further than the market does, we move quickly and go all in.",
+      "quote": "Do one thing at a time, and do it well.",
+      "attribution": "Elbert Hubbard"
+    },
+    {
+      "name": "Partnership",
+      "text": "We make investment decisions as a firm and support our companies as a firm. We win and lose together, and we show up long after the check clears.",
+      "quote": "Alone we can do so little; together we can do so much.",
+      "attribution": "Helen Keller"
+    },
+    {
+      "name": "Humility",
+      "text": "Starting a company in food or medicine is, by definition, a hard thing to attempt. We never lose sight of the challenges our founders face every day.",
+      "quote": "I am still learning.",
+      "attribution": "Michelangelo"
+    },
+    {
+      "name": "Integrity",
+      "text": "Our reputation is the most important asset we have. It matters more than any single investment or outcome we might achieve.",
+      "quote": "Character is what you do when no one is watching.",
+      "attribution": "attributed to J.C. Watts"
+    }
+  ],
+  "pending_quote_note": "Founder quote pending -- to be supplied by the company once available"
 }
